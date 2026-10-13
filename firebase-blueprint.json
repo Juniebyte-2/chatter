@@ -1,0 +1,156 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile with custom theme preferences, social stats, and moderation flags",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "maxLength": 128 },
+        "email": { "type": "string", "maxLength": 256 },
+        "username": { "type": "string", "maxLength": 30 },
+        "displayName": { "type": "string", "maxLength": 50 },
+        "bio": { "type": "string", "maxLength": 300 },
+        "photoURL": { "type": "string", "maxLength": 500000 },
+        "friendCode": { "type": "string", "maxLength": 30 },
+        "role": { "type": "string", "enum": ["admin", "mod", "user"] },
+        "customCss": { "type": "string", "maxLength": 10000 },
+        "isDeactivated": { "type": "boolean" },
+        "isSuspended": { "type": "boolean" },
+        "isBanned": { "type": "boolean" }
+      },
+      "required": ["userId", "email", "username", "displayName"]
+    },
+    "Chatroom": {
+      "title": "Chatroom",
+      "description": "Chat channels supporting open, passcode-locked, or invite-only modes",
+      "type": "object",
+      "properties": {
+        "roomId": { "type": "string", "maxLength": 128 },
+        "name": { "type": "string", "maxLength": 100 },
+        "description": { "type": "string", "maxLength": 500 },
+        "creatorId": { "type": "string", "maxLength": 128 },
+        "isLocked": { "type": "boolean" },
+        "lockType": { "type": "string", "enum": ["none", "passcode", "invite_only"] }
+      },
+      "required": ["roomId", "name", "creatorId", "isLocked", "lockType"]
+    },
+    "Message": {
+      "title": "Message",
+      "description": "Real-time message sent inside a chatroom",
+      "type": "object",
+      "properties": {
+        "messageId": { "type": "string", "maxLength": 128 },
+        "roomId": { "type": "string", "maxLength": 128 },
+        "senderId": { "type": "string", "maxLength": 128 },
+        "senderUsername": { "type": "string", "maxLength": 30 },
+        "senderDisplayName": { "type": "string", "maxLength": 50 },
+        "text": { "type": "string", "maxLength": 4000 }
+      },
+      "required": ["messageId", "roomId", "senderId", "senderUsername", "senderDisplayName"]
+    },
+    "Post": {
+      "title": "Post",
+      "description": "Feed post replicating Twitter/X feed",
+      "type": "object",
+      "properties": {
+        "postId": { "type": "string", "maxLength": 128 },
+        "authorId": { "type": "string", "maxLength": 128 },
+        "authorUsername": { "type": "string", "maxLength": 30 },
+        "authorDisplayName": { "type": "string", "maxLength": 50 },
+        "content": { "type": "string", "maxLength": 2000 }
+      },
+      "required": ["postId", "authorId", "authorUsername", "content"]
+    },
+    "Report": {
+      "title": "Report",
+      "description": "User violation report submitted to mods/admin",
+      "type": "object",
+      "properties": {
+        "reportId": { "type": "string", "maxLength": 128 },
+        "reporterId": { "type": "string", "maxLength": 128 },
+        "reportedUserId": { "type": "string", "maxLength": 128 },
+        "status": { "type": "string", "enum": ["pending", "investigating", "resolved", "dismissed"] }
+      },
+      "required": ["reportId", "reporterId", "reportedUserId", "status"]
+    },
+    "Appeal": {
+      "title": "Appeal",
+      "description": "Suspension or ban appeal submission",
+      "type": "object",
+      "properties": {
+        "appealId": { "type": "string", "maxLength": 128 },
+        "type": { "type": "string", "enum": ["suspension", "ban"] },
+        "username": { "type": "string", "maxLength": 30 },
+        "reason": { "type": "string", "maxLength": 2000 },
+        "status": { "type": "string", "enum": ["pending", "reviewed", "accepted", "rejected"] }
+      },
+      "required": ["appealId", "type", "username", "reason", "status"]
+    },
+    "Conversation": {
+      "title": "Conversation",
+      "description": "Direct message thread between two users",
+      "type": "object",
+      "properties": {
+        "conversationId": { "type": "string", "maxLength": 128 },
+        "lastMessageText": { "type": "string", "maxLength": 4000 },
+        "lastMessageAt": { "type": "string" },
+        "lastSenderId": { "type": "string", "maxLength": 128 }
+      },
+      "required": ["conversationId"]
+    },
+    "Community": {
+      "title": "Community",
+      "description": "Reddit-style community with topics, members, rules, and moderators",
+      "type": "object",
+      "properties": {
+        "communityId": { "type": "string", "maxLength": 128 },
+        "name": { "type": "string", "maxLength": 60 },
+        "displayName": { "type": "string", "maxLength": 100 },
+        "description": { "type": "string", "maxLength": 1000 },
+        "category": { "type": "string", "maxLength": 50 },
+        "iconEmoji": { "type": "string", "maxLength": 10 },
+        "creatorId": { "type": "string", "maxLength": 128 },
+        "membersCount": { "type": "number" }
+      },
+      "required": ["communityId", "name", "displayName", "creatorId"]
+    }
+  },
+  "firestore": {
+    "/communities/{communityId}": {
+      "schema": { "$ref": "#/entities/Community" },
+      "description": "Reddit-style community collections"
+    },
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "User profile documents"
+    },
+    "/chatrooms/{roomId}": {
+      "schema": { "$ref": "#/entities/Chatroom" },
+      "description": "Chatrooms collection"
+    },
+    "/chatrooms/{roomId}/messages/{messageId}": {
+      "schema": { "$ref": "#/entities/Message" },
+      "description": "Chatroom messages"
+    },
+    "/conversations/{conversationId}": {
+      "schema": { "$ref": "#/entities/Conversation" },
+      "description": "Direct message conversation thread"
+    },
+    "/conversations/{conversationId}/messages/{messageId}": {
+      "schema": { "$ref": "#/entities/Message" },
+      "description": "Direct message thread messages"
+    },
+    "/posts/{postId}": {
+      "schema": { "$ref": "#/entities/Post" },
+      "description": "Feed posts"
+    },
+    "/reports/{reportId}": {
+      "schema": { "$ref": "#/entities/Report" },
+      "description": "User report tickets"
+    },
+    "/appeals/{appealId}": {
+      "schema": { "$ref": "#/entities/Appeal" },
+      "description": "Ban and suspension appeals"
+    }
+  }
+}

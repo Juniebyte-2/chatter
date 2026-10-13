@@ -1,0 +1,72 @@
+@import "tailwindcss";
+
+:root {
+  --bg-app: #090e17;
+  --bg-sidebar: #0f172a;
+  --bg-card: #131e33;
+  --border-app: #1e293b;
+  --text-primary: #f8fafc;
+  --text-muted: #94a3b8;
+  --color-accent: #38bdf8;
+  --bubble-self: #1d4ed8;
+  --bubble-other: #1e293b;
+  --name-self: #60a5fa;
+  --name-other: #94a3b8;
+}
+
+body {
+  background-color: var(--bg-app);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.25);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.45);
+}
+
+/* Cool color cycle flickering animation with red, orange, and yellow for @Neo / @A321-251N */
+@keyframes flameFlicker {
+  0% {
+    color: #ef4444;
+    text-shadow: 0 0 6px rgba(239, 68, 68, 0.7);
+  }
+  25% {
+    color: #f97316;
+    text-shadow: 0 0 9px rgba(249, 115, 22, 0.85);
+  }
+  50% {
+    color: #eab308;
+    text-shadow: 0 0 7px rgba(234, 179, 8, 0.8);
+  }
+  75% {
+    color: #f97316;
+    text-shadow: 0 0 10px rgba(249, 115, 22, 0.9);
+  }
+  100% {
+    color: #ef4444;
+    text-shadow: 0 0 6px rgba(239, 68, 68, 0.7);
+  }
+}
+
+.neo-flame-cycle {
+  animation: flameFlicker 1.5s infinite ease-in-out;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
